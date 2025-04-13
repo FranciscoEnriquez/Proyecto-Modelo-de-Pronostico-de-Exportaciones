@@ -1,0 +1,13 @@
+﻿textbox2
+#Error
+
+chart1_SeriesGroup1_label,chart1_SeriesGroup1_chart1_CategoryGroup1_label,chart1_SeriesGroup1_chart1_CategoryGroup1_Value_DataValue0
+Tequila 100%,1995,3.712977
+Tequila,1995,12.304611
+Total,1995,16.017588
+
+SubCategoria,Year,Valor
+Tequila 100%,1995,3.7
+Tequila,1995,12.3
+Total,1995,16.0
+

@@ -1,0 +1,13 @@
+﻿textbox2
+#Error
+
+chart1_SeriesGroup1_label,chart1_SeriesGroup1_chart1_CategoryGroup1_label,chart1_SeriesGroup1_chart1_CategoryGroup1_Value_DataValue0
+Granel,1995,4.956842
+Envasado,1995,0.498557125
+Total,1995,5.455399125
+
+SubCategoria,Year,Valor
+Granel,1995,5.0
+Envasado,1995,0.5
+Total,1995,5.5
+
