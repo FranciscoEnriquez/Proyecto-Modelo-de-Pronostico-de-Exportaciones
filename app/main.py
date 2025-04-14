@@ -1,6 +1,6 @@
 from fastapi import FastAPI, BackgroundTasks
-from datos_categorias import descargar_datos_categorias
-from datos_paises import descargar_datos_paises
+from app.datos_categorias import descargar_datos_categorias
+from app.datos_paises import descargar_datos_paises
 
 app = FastAPI(
     title="API de Descarga de Reportes del CRT",
