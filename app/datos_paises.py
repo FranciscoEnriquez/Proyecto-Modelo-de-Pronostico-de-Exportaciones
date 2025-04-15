@@ -1,14 +1,18 @@
-# datos_paises.py
 # -*- coding: utf-8 -*-
-"""
-Módulo para automatizar la descarga mensual del informe de Exportaciones por País
-desde el sitio del Consejo Regulador del Tequila (CRT).
-Este script utiliza Selenium WebDriver para interactuar con el visor SSRS.
 
-Cada archivo se descarga como CSV con el nombre:
-    AAAA-MM-ExportacionesPais.csv
-y se guarda en:
-    BASE_DOWNLOAD_DIR/AAAA-ExportacionesPais/
+"""
+datos_paises.py
+
+Este script automatiza mediante Selenium la descarga de reportes mensuales 
+de exportaciones por país desde el sitio del CRT.
+
+Para cada mes y año desde 1997 hasta 2024:
+- Selecciona todas las categorías, clases y países.
+- Establece el rango de fechas para el mes correspondiente.
+- Descarga el reporte en formato CSV.
+- Renombra y guarda el archivo en la carpeta /data/{año}-ExportacionesPais/.
+
+Autor: Francisco Enríquez
 """
 
 import os

@@ -1,14 +1,18 @@
-# datos_categorias.py
 # -*- coding: utf-8 -*-
+
 """
-Módulo que automatiza la descarga de reportes mensuales del Consejo Regulador del Tequila
-para las siguientes categorías:
+datos_categorias.py
+
+Este script utiliza Selenium para automatizar la descarga mensual de archivos CSV 
+del Consejo Regulador del Tequila (CRT) para los siguientes módulos:
 - Producción Total de Tequila
-- Consumo Total de Agave
+- Consumo de Agave Total
 - Exportaciones Totales por Categoría
 - Exportaciones Totales por Forma
 
-Utiliza Selenium WebDriver para interactuar con el visor SSRS de .NET WebForms.
+Cada archivo se guarda en la carpeta /data/{nombre_categoria}/{año}-{nombre_categoria}.
+
+Autor: Francisco Enríquez
 """
 
 import os

@@ -1,4 +1,15 @@
-# main.py
+"""
+main.py
+
+Este script lanza una API con FastAPI que permite iniciar la descarga automatizada
+de reportes del Consejo Regulador del Tequila (CRT), ejecutando tareas en segundo plano.
+
+Rutas principales:
+- /health: Verifica el estado del servicio.
+- /descargar?tipo=categorias|paises: Inicia la descarga por categorías o países.
+
+Autor: Francisco Enríquez
+"""
 
 from fastapi import FastAPI, BackgroundTasks
 from app.datos_categorias import descargar_datos_categorias
