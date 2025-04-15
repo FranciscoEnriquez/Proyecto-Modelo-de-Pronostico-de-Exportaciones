@@ -1,5 +1,16 @@
 # datos_categorias.py
 # -*- coding: utf-8 -*-
+"""
+Módulo que automatiza la descarga de reportes mensuales del Consejo Regulador del Tequila
+para las siguientes categorías:
+- Producción Total de Tequila
+- Consumo Total de Agave
+- Exportaciones Totales por Categoría
+- Exportaciones Totales por Forma
+
+Utiliza Selenium WebDriver para interactuar con el visor SSRS de .NET WebForms.
+"""
+
 import os
 import time
 from selenium import webdriver
@@ -8,17 +19,24 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+# Ruta al ejecutable de ChromeDriver
 CHROME_DRIVER_PATH = "C:/Users/franc/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe"
+
+# Directorio base donde se almacenarán los archivos descargados
 BASE_DOWNLOAD_DIR = r"C:\Users\franc\Downloads\Modelo_Pronosticos\data"
+
+# Formato de exportación en el visor del CRT
 FORMATO_EXPORTACION = "CSV (delimitado por comas)"
 EXTENSION = ".csv"
 
+# Mapeo de nombres de meses
 meses = {
     "01": "Enero", "02": "Febrero", "03": "Marzo", "04": "Abril",
     "05": "Mayo", "06": "Junio", "07": "Julio", "08": "Agosto",
     "09": "Septiembre", "10": "Octubre", "11": "Noviembre", "12": "Diciembre",
 }
 
+# URLs de los visores por categoría
 PAGINAS = {
     "ProduccionTotalTequila": "https://old.crt.org.mx/EstadisticasCRTweb/Informes/ProduccionTotalTequila.aspx",
     "ConsumodeAgaveTotal": "https://old.crt.org.mx/EstadisticasCRTweb/Informes/ConsumodeAgaveTotal.aspx",
@@ -26,7 +44,18 @@ PAGINAS = {
     "ExportacionesTotalForma": "https://old.crt.org.mx/EstadisticasCRTweb/Informes/ExportacionesTotalForma.aspx"
 }
 
+
 def esperar_y_renombrar(nombre_destino, archivos_antes, download_dir, extension=EXTENSION, timeout=1):
+    """
+    Espera a que se complete la descarga y renombra el archivo al formato deseado.
+
+    :param nombre_destino: nombre con el que se debe guardar el archivo.
+    :param archivos_antes: conjunto de archivos antes de iniciar la descarga.
+    :param download_dir: directorio de descarga.
+    :param extension: extensión del archivo esperado.
+    :param timeout: tiempo máximo de espera en segundos.
+    :return: True si la descarga fue exitosa y se renombró el archivo.
+    """
     print("  Esperando descarga completa...")
     tiempo = 0.0
     archivo_nuevo = None
@@ -57,21 +86,31 @@ def esperar_y_renombrar(nombre_destino, archivos_antes, download_dir, extension=
             print(f"  Error al renombrar: {str(e)}")
             return False
     else:
-        print("  No se encontro el archivo descargado.")
+        print("  No se encontró el archivo descargado.")
         return False
 
+
 def esperar_renderizado(wait):
+    """
+    Espera a que el informe esté completamente cargado en el visor.
+    """
     try:
         print(" Esperando que el informe se cargue completamente...")
         wait.until(EC.presence_of_element_located((By.ID, "VisibleReportContentReportViewer1_ctl09")))
         wait.until(EC.element_to_be_clickable((By.ID, "ReportViewer1_ctl05_ctl04_ctl00_ButtonLink")))
         print(" Informe listo.")
     except Exception as e:
-        print(f" Error: informe no termino de cargar ({type(e).__name__})")
+        print(f" Error: el informe no terminó de cargar ({type(e).__name__})")
+
 
 def descargar_datos_categorias():
+    """
+    Función principal que itera sobre cada página, año y mes
+    para automatizar la descarga y renombrar los reportes.
+    """
     for nombre_pagina, url in PAGINAS.items():
         print(f"\n######## INICIANDO: {nombre_pagina} ########")
+
         for anio in range(1995, 2025):
             print(f"\n==============================")
             print(f"Descargando archivos del año {anio} - {nombre_pagina}")
@@ -91,7 +130,6 @@ def descargar_datos_categorias():
             options = webdriver.ChromeOptions()
             options.add_experimental_option("prefs", prefs)
             options.add_argument("--start-maximized")
-            # options.add_argument("--headless=new")
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
 
@@ -100,11 +138,12 @@ def descargar_datos_categorias():
             wait = WebDriverWait(driver, 120)
 
             driver.get(url)
-            wait.until(EC.presence_of_element_located((By.ID, "ReportViewer1_ctl04_ctl03_ddDropDownButton")))
 
-            driver.find_element(By.ID, "ReportViewer1_ctl04_ctl03_ddDropDownButton").click()
-            time.sleep(1)
             try:
+                wait.until(EC.presence_of_element_located((By.ID, "ReportViewer1_ctl04_ctl03_ddDropDownButton")))
+                driver.find_element(By.ID, "ReportViewer1_ctl04_ctl03_ddDropDownButton").click()
+                time.sleep(1)
+
                 year_option = wait.until(EC.element_to_be_clickable((By.XPATH, f"//label[normalize-space(text())='{anio}']")))
                 year_option.click()
                 time.sleep(0.5)
@@ -120,15 +159,18 @@ def descargar_datos_categorias():
                     driver.find_element(By.ID, "ReportViewer1_ctl04_ctl05_ddDropDownButton").click()
                     time.sleep(1)
 
+                    # Desmarcar checkboxes activos
                     for cb in driver.find_elements(By.XPATH, "//div[@id='ReportViewer1_ctl04_ctl05_divDropDown']//input[@type='checkbox']"):
                         if cb.is_selected():
                             cb.click()
                             time.sleep(0.2)
 
+                    # Seleccionar mes
                     label_mes = wait.until(EC.element_to_be_clickable((By.XPATH, f"//label[normalize-space(text())='{mes_nombre}']")))
                     label_mes.click()
                     time.sleep(0.5)
 
+                    # Clic en botón 'Ver Informe'
                     driver.find_element(By.ID, "ReportViewer1_ctl04_ctl00").click()
                     esperar_renderizado(wait)
                     time.sleep(1.5)
@@ -140,22 +182,22 @@ def descargar_datos_categorias():
                     archivos_antes = set(os.listdir(download_dir))
 
                     try:
-                        print(" Abriendo menu de exportacion...")
+                        print(" Abriendo menú de exportación...")
                         driver.find_element(By.ID, "ReportViewer1_ctl05_ctl04_ctl00_ButtonLink").click()
                         time.sleep(0.5)
 
-                        print(f" Buscando opcion de exportacion: {FORMATO_EXPORTACION}")
+                        print(f" Buscando opción de exportación: {FORMATO_EXPORTACION}")
                         export_link = wait.until(EC.element_to_be_clickable((By.XPATH, f"//a[normalize-space(text())='{FORMATO_EXPORTACION}']")))
                         export_link.click()
                     except Exception as e:
-                        print(f" No se encontro la opcion de exportacion para {anio}-{mes_nombre} ({type(e).__name__})")
+                        print(f" No se encontró la opción de exportación para {anio}-{mes_nombre} ({type(e).__name__})")
                         continue
 
                     nombre_destino = f"{anio}-{mes_num}-{nombre_pagina}"
                     if esperar_y_renombrar(nombre_destino, archivos_antes, download_dir):
-                        print(f" Descarga completada para {anio}-{mes_num}")
+                        print(f"  Descarga completada para {anio}-{mes_num}")
                     else:
-                        print(f" Fallo en descarga de {anio}-{mes_num}")
+                        print(f"  Fallo en descarga de {anio}-{mes_num}")
 
                 except Exception as e:
                     try:
@@ -166,12 +208,12 @@ def descargar_datos_categorias():
 
                     try:
                         driver.switch_to.default_content()
-                    except Exception as e:
-                        print(f" No se puede cambiar al contenido principal: {type(e).__name__}")
+                    except:
+                        print(f" No se puede cambiar al contenido principal.")
 
-                    print(f" Error durante {anio}-{mes_nombre}: {str(e)}")
+                    print(f"  Error durante {anio}-{mes_nombre}: {str(e)}")
                     continue
 
             driver.quit()
 
-    print("\n Proceso finalizado.")
+    print("\n Proceso de descarga finalizado.")
