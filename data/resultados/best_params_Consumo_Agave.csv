@@ -1,0 +1,3 @@
+Modelo,MAE,est__n_estimators,est__learning_rate,est__max_iter,est__max_depth
+GradientBoosting,8.08204140821881,100.0,0.1,,
+HistGradientBoosting,8.46447229103671,,0.1,200.0,10.0

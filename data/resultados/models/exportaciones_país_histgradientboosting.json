@@ -1,0 +1,49 @@
+{
+  "dataset": "paises_features.csv",
+  "modelo": "HistGradientBoostingRegressor",
+  "mae_cv": 18983.460843639015,
+  "timestamp": "2025-05-26T04:15:24",
+  "sklearn_version": "1.5.0",
+  "hyperparams": {
+    "memory": null,
+    "steps": [
+      [
+        "selector",
+        "SelectKBest(k='all', score_func=<function f_regression at 0x7825f4836de0>)"
+      ],
+      [
+        "est",
+        "HistGradientBoostingRegressor(learning_rate=0.05, random_state=42)"
+      ]
+    ],
+    "transform_input": null,
+    "verbose": false,
+    "selector": "SelectKBest(k='all', score_func=<function f_regression at 0x7825f4836de0>)",
+    "est": "HistGradientBoostingRegressor(learning_rate=0.05, random_state=42)",
+    "selector__k": "all",
+    "selector__score_func": "<function f_regression at 0x7825f4836de0>",
+    "est__categorical_features": "from_dtype",
+    "est__early_stopping": "auto",
+    "est__interaction_cst": null,
+    "est__l2_regularization": 0.0,
+    "est__learning_rate": 0.05,
+    "est__loss": "squared_error",
+    "est__max_bins": 255,
+    "est__max_depth": null,
+    "est__max_features": 1.0,
+    "est__max_iter": 100,
+    "est__max_leaf_nodes": 31,
+    "est__min_samples_leaf": 20,
+    "est__monotonic_cst": null,
+    "est__n_iter_no_change": 10,
+    "est__quantile": null,
+    "est__random_state": 42,
+    "est__scoring": "loss",
+    "est__tol": 1e-07,
+    "est__validation_fraction": 0.1,
+    "est__verbose": 0,
+    "est__warm_start": false
+  },
+  "n_splits": 5,
+  "random_state": 42
+}
