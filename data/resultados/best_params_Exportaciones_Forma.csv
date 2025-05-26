@@ -1,0 +1,3 @@
+Modelo,MAE,est__n_estimators,est__min_samples_split,est__max_depth,est__max_iter,est__learning_rate
+ExtraTrees,1.39357926073017,200.0,10.0,10,,
+HistGradientBoosting,1.4308113860118157,,,5,200.0,0.05

@@ -1,0 +1,49 @@
+{
+  "dataset": "agave_features.csv",
+  "modelo": "GradientBoostingRegressor",
+  "mae_cv": 8.08204140821881,
+  "timestamp": "2025-05-26T03:38:16",
+  "sklearn_version": "1.5.0",
+  "hyperparams": {
+    "memory": null,
+    "steps": [
+      [
+        "selector",
+        "SelectKBest(k='all', score_func=<function f_regression at 0x7825f4836de0>)"
+      ],
+      [
+        "est",
+        "GradientBoostingRegressor(random_state=42)"
+      ]
+    ],
+    "transform_input": null,
+    "verbose": false,
+    "selector": "SelectKBest(k='all', score_func=<function f_regression at 0x7825f4836de0>)",
+    "est": "GradientBoostingRegressor(random_state=42)",
+    "selector__k": "all",
+    "selector__score_func": "<function f_regression at 0x7825f4836de0>",
+    "est__alpha": 0.9,
+    "est__ccp_alpha": 0.0,
+    "est__criterion": "friedman_mse",
+    "est__init": null,
+    "est__learning_rate": 0.1,
+    "est__loss": "squared_error",
+    "est__max_depth": 3,
+    "est__max_features": null,
+    "est__max_leaf_nodes": null,
+    "est__min_impurity_decrease": 0.0,
+    "est__min_samples_leaf": 1,
+    "est__min_samples_split": 2,
+    "est__min_weight_fraction_leaf": 0.0,
+    "est__n_estimators": 100,
+    "est__n_iter_no_change": null,
+    "est__random_state": 42,
+    "est__subsample": 1.0,
+    "est__tol": 0.0001,
+    "est__validation_fraction": 0.1,
+    "est__verbose": 0,
+    "est__warm_start": false
+  },
+  "n_splits": 5,
+  "random_state": 42
+}

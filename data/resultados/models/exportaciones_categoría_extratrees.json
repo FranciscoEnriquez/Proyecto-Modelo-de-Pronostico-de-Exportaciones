@@ -1,0 +1,46 @@
+{
+  "dataset": "categoria_features.csv",
+  "modelo": "ExtraTreesRegressor",
+  "mae_cv": 1.7405335825279664,
+  "timestamp": "2025-05-26T03:37:07",
+  "sklearn_version": "1.5.0",
+  "hyperparams": {
+    "memory": null,
+    "steps": [
+      [
+        "selector",
+        "SelectKBest(k='all', score_func=<function f_regression at 0x7825f4836de0>)"
+      ],
+      [
+        "est",
+        "ExtraTreesRegressor(max_depth=10, random_state=42)"
+      ]
+    ],
+    "transform_input": null,
+    "verbose": false,
+    "selector": "SelectKBest(k='all', score_func=<function f_regression at 0x7825f4836de0>)",
+    "est": "ExtraTreesRegressor(max_depth=10, random_state=42)",
+    "selector__k": "all",
+    "selector__score_func": "<function f_regression at 0x7825f4836de0>",
+    "est__bootstrap": false,
+    "est__ccp_alpha": 0.0,
+    "est__criterion": "squared_error",
+    "est__max_depth": 10,
+    "est__max_features": 1.0,
+    "est__max_leaf_nodes": null,
+    "est__max_samples": null,
+    "est__min_impurity_decrease": 0.0,
+    "est__min_samples_leaf": 1,
+    "est__min_samples_split": 2,
+    "est__min_weight_fraction_leaf": 0.0,
+    "est__monotonic_cst": null,
+    "est__n_estimators": 100,
+    "est__n_jobs": null,
+    "est__oob_score": false,
+    "est__random_state": 42,
+    "est__verbose": 0,
+    "est__warm_start": false
+  },
+  "n_splits": 5,
+  "random_state": 42
+}

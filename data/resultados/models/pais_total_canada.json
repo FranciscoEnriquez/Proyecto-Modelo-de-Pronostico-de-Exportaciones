@@ -1,31 +1,32 @@
 {
   "dataset": "paises",
   "modelo": "RandomForest + SelectKBest",
-  "mae_cv": 30695.733420610584,
-  "fecha_entrenamiento": "2025-05-18T14:28:04",
-  "sklearn_version": "1.2.0",
+  "mae_cv": 42320.86026084146,
+  "fecha_entrenamiento": "2025-05-19T02:40:40",
+  "sklearn_version": "1.5.0",
   "n_splits": 3,
   "parametros": {
     "memory": null,
     "steps": [
       [
         "selector",
-        "SelectKBest(k='all', score_func=<function f_regression at 0x000002006B90C9A0>)"
+        "SelectKBest(k='all', score_func=<function f_regression at 0x7dc8af1bd3a0>)"
       ],
       [
         "rf",
-        "RandomForestRegressor(min_samples_leaf=3, n_estimators=200, n_jobs=-1,\n                      random_state=42)"
+        "RandomForestRegressor(max_depth=10, min_samples_leaf=3, n_estimators=200,\n                      n_jobs=-1, random_state=42)"
       ]
     ],
+    "transform_input": null,
     "verbose": false,
-    "selector": "SelectKBest(k='all', score_func=<function f_regression at 0x000002006B90C9A0>)",
-    "rf": "RandomForestRegressor(min_samples_leaf=3, n_estimators=200, n_jobs=-1,\n                      random_state=42)",
+    "selector": "SelectKBest(k='all', score_func=<function f_regression at 0x7dc8af1bd3a0>)",
+    "rf": "RandomForestRegressor(max_depth=10, min_samples_leaf=3, n_estimators=200,\n                      n_jobs=-1, random_state=42)",
     "selector__k": "all",
-    "selector__score_func": "<function f_regression at 0x000002006B90C9A0>",
+    "selector__score_func": "<function f_regression at 0x7dc8af1bd3a0>",
     "rf__bootstrap": true,
     "rf__ccp_alpha": 0.0,
     "rf__criterion": "squared_error",
-    "rf__max_depth": null,
+    "rf__max_depth": 10,
     "rf__max_features": 1.0,
     "rf__max_leaf_nodes": null,
     "rf__max_samples": null,
