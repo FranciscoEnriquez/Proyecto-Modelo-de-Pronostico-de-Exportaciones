@@ -1,0 +1,21 @@
+stages:
+  prepare:
+    cmd: python pipeline/prepare.py
+    deps:
+      - data/consolidado_consumodeagavetotal.csv
+      - data/consolidado_exportaciones_pais.csv
+      - data/consolidado_exportacionestotalcategoria.csv
+      - data/consolidado_exportacionestotalforma.csv
+      - data/consolidado_producciontotaltequila.csv
+    params:
+      - prepare.seed
+      - prepare.train_split
+      - prepare.files
+    outs:
+      - data/pipeline/prepared
+  # preprocessing:
+  #   cmd: python pipeline/preprocess.py data/prepared data/preprocessed
+  #   deps:
+  #     - data/pipeline/prepared
+  #   params:
+  #     - 
