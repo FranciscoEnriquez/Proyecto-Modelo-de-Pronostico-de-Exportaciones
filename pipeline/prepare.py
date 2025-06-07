@@ -23,9 +23,8 @@ def separate_subcategories(df: DataFrame, column: str = "", subcategoria: List[s
 
     subcategoria is a list of two values, the first is for Tequila 100% and the second is for Tequila.
     """
-    teq_100_df = df[df[column] == subcategoria[0]].copy()
-    teq_df = df[df[column] == subcategoria[1]].copy()
-
+    teq_100_df = remove_columns(df[df[column] == subcategoria[0]].copy(), column)
+    teq_df = remove_columns(df[df[column] == subcategoria[1]].copy(), column)
     return teq_100_df, teq_df
 
 def isolate_country_data(dafa_df: DataFrame, country: str = ""):
@@ -73,11 +72,13 @@ def main():
         # ======================== Remove unncesary data from dataset ========================
         if not is_pais_dataset:
             dataframe = remove_totals(dataframe, category_column)
+            dataframe = remove_columns(dataframe, ["AñoArchivo"])
         else:
             # ====================== Aislar datos de un país específico ======================
             dataframe = isolate_country_data(dataframe, "ESTADOS UNIDOS DE AMERICA")
             dataframe = dataframe[dataframe["Clase"] == "BLANCO"].copy()
-            dataframe = remove_columns(dataframe, ["Total_Pais_Mes", "Clase", "Litros 40 % Alc. Vol"])
+            dataframe = remove_columns(dataframe, ["Total_Pais_Mes", "Clase", "Litros 40 % Alc. Vol", "NombrePais"])
+            dataframe = dataframe.rename(columns={'Total_Categoria_Mes': 'Valor', 'AñoArchivo': 'Year'})
 
         # ======================== Separar en dos categorias ========================
         if not is_pais_dataset:

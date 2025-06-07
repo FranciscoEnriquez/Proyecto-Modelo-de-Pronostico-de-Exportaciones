@@ -13,9 +13,13 @@ stages:
       - prepare.files
     outs:
       - data/pipeline/prepared
-  # preprocessing:
-  #   cmd: python pipeline/preprocess.py data/prepared data/preprocessed
-  #   deps:
-  #     - data/pipeline/prepared
-  #   params:
-  #     - 
+  preprocessing:
+    cmd: python pipeline/preprocess.py data/pipeline/prepared data/pipeline/preprocessed
+    deps:
+      - data/pipeline/prepared
+    params:
+      - preprocess.target
+      - preprocess.low_var
+      - preprocess.high_corr
+      - preprocess.seed
+      - preprocess.files

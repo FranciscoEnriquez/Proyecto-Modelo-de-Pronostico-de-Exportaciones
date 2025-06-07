@@ -1,0 +1,48 @@
+version_label: "0.1"
+preprocessing:
+  CONTINENTE_MAP:
+      "ESTADOS UNIDOS DE AMERICA": "America"
+      "CANADA": "America"
+      "BRASIL": "America"
+      "ALEMANIA": "Europa"
+      "FRANCIA": "Europa"
+      "REINO UNIDO": "Europa"
+      "ESPAÑA": "Europa"
+      "CHINA": "Asia"
+      "JAPON": "Asia"
+  LOW_VAR_THRESHOLD: 0.01
+  HIGH_CORR_THRESHOLD: 0.95
+prepare:
+  train_split: 0.80
+  seed: 42
+  files:
+    # - path: "consolidado_consumodeagavetotal.csv"
+    #   target_col: "SubCategoria"
+    - path: "consolidado_exportaciones_pais.csv"
+      subcategoria_col: "Categoria"
+    - path: "consolidado_exportacionestotalcategoria.csv"
+      subcategoria_col: "SubCategoria"
+    # - path: "consolidado_exportacionestotalforma.csv"
+    #   subcategoria_col: "SubCategoria"
+    # - path: "consolidado_producciontotaltequila.csv"
+    #   subcategoria_col: "SubCategoria"
+preprocess:
+  target: "Valor"
+  low_var: 0.01
+  high_corr: 0.95
+  seed: 42
+  files:
+    # - path: "consolidado_consumodeagavetotal.csv"
+    #   target_col: "SubCategoria"
+    - file_name: "exportaciones_pais"
+      subcategoria_col: "Categoria"
+    - file_name: "exportacionestotalcategoria"
+      subcategoria_col: "SubCategoria"
+    # - path: "consolidado_exportacionestotalforma.csv"
+    #   subcategoria_col: "SubCategoria"
+    # - path: "consolidado_producciontotaltequila.csv"
+    #   subcategoria_col: "SubCategoria"
+mlflow:
+  run_name: "Run for {model}"
+  experiment_name: "TequilaExportaciones"
+  tracking_uri: "http://127.0.0.1:5000"

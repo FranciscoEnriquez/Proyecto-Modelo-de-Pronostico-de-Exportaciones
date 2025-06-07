@@ -1,0 +1,42 @@
+version_label: "0.1"
+prepare:
+  train_split: 0.80
+  seed: 42
+train_knn:
+  seed: 42
+  n_est: 50
+  min_split: 0.01
+  n_neighbors: [3, 8, 21]
+  weights: ["uniform", "distance"]
+  p: [1, 2]
+train_decision_tree:
+  seed: 42
+  criterion: ["gini", "entropy"]
+  max_depth: [4, 6, 8, 10, 12]
+  min_samples_split: [2, 4]
+train_random_forest:
+  seed: 42
+  n_estimators: [50, 100, 250, 500]
+  criterion: ["gini", "entropy", "log_loss"]
+  max_depth: [4, 6, 8, 10, 12]
+  max_features: [10, 20, 30, 40]
+  min_samples_leaf: [1, 2, 4]
+train_svm:
+  seed: 42
+  C: [0.1, 1, 10]
+  kernel: ["linear", "rbf"]
+  gamma: ["scale", "auto"]
+train_logistic:
+  seed: 42
+  C: [0.001, 0.01, 0.1, 1, 10, 100, 1000]
+  max_iter: [100, 200, 300, 500]
+  solver: ["lbfgs", "liblinear", "saga"]
+train_xgboost:
+  max_depth: [3, 5, 7]
+  learning_rate: [0.1, 0.01, 0.001]
+  subsample: [0.5, 0.7, 1]
+  scoring: "accuracy"
+mlflow:
+  run_name: "Run for {model}"
+  experiment_name: "TequilaExportaciones"
+  tracking_uri: "http://127.0.0.1:5000"
