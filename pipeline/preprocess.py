@@ -91,7 +91,8 @@ def feature_engineering(
     high_corr: float,
     one_hot_encoder: OneHotEncoder = None,
     minmax_scaler: MinMaxScaler = None,
-    train_columns: List[str] = None
+    train_columns: List[str] = None,
+    ignore_lags: bool = False,
 ) -> Tuple[pd.DataFrame, OneHotEncoder]:
     logging.info(f"··· FE: {nombre.upper()} ···")
     df["Fecha"] = pd.to_datetime(
@@ -100,8 +101,9 @@ def feature_engineering(
     df["Mes"] = df["Fecha"].dt.month
 
     # lags / MA / estacionalidad
-    df["Lag_1"] = df[target_col].shift(1)
-    df["Lag_12"] = df[target_col].shift(12)
+    if not ignore_lags:
+        df["Lag_1"] = df[target_col].shift(1)
+        df["Lag_12"] = df[target_col].shift(12)
     df["MA_4"] = moving_avg(df[target_col], 4)
     df["MA_12"] = moving_avg(df[target_col], 12)
     df["Month_sin"] = np.sin(2 * np.pi * df["Mes"] / 12)
@@ -129,19 +131,20 @@ def feature_engineering(
     )
     df = df.drop(columns=categorical_cols)
 
-    # # filtros numéricos
-    num = df.select_dtypes("number").fillna(0)
-    keep = num.columns[VarianceThreshold(low_var).fit(num).get_support()]
-    df = df[keep.tolist() + [c for c in df.columns if c not in num.columns]]
-    high_corr_cols = _remove_high_corr(df.select_dtypes("number"), target_col, high_corr)
-    df = df.drop(
-        columns=high_corr_cols
-    )
-    df = df.dropna()
-
     if train_columns:
         # Ensure the dataframe has the same columns as the training set
-        df = df[train_columns].copy()
+        drop_known_cols = [item for item in train_columns if item in df.columns.tolist()]
+        df = df[drop_known_cols].copy()
+    else:
+        # # filtros numéricos
+        num = df.select_dtypes("number").fillna(0)
+        keep = num.columns[VarianceThreshold(low_var).fit(num).get_support()]
+        df = df[keep.tolist() + [c for c in df.columns if c not in num.columns]]
+        high_corr_cols = _remove_high_corr(df.select_dtypes("number"), target_col, high_corr)
+        df = df.drop(
+            columns=high_corr_cols
+        )
+        df = df.dropna()
 
     # MinMaxScaler
     filtered_numerical = [item for item in numerical_cols if item in df.select_dtypes(include=['number']).columns.tolist()]
