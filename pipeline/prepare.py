@@ -116,6 +116,18 @@ def main():
                     output_train_path,
                     f"{file_name}_teq_test.csv"
                 ), index=False)
+            
+            # Save complete dataset with no division
+            teq_100_df.to_csv(
+                os.path.join(
+                    output_train_path,
+                    f"{file_name}_teq100_full.csv"
+                ), index=False)
+            teq_df.to_csv(
+                os.path.join(
+                    output_train_path,
+                    f"{file_name}_teq_full.csv"
+                ), index=False)
         else:
             teq_100_df, teq_df = separate_subcategories(dataframe, category_column, ["TEQUILA 100% DE AGAVE", "TEQUILA"])
 
@@ -151,6 +163,18 @@ def main():
                 os.path.join(
                     output_train_path,
                     f"{file_name}_teq_test.csv"
+                ), index=False)
+            
+            # Save complete dataset with no division
+            teq_100_df.to_csv(
+                os.path.join(
+                    output_train_path,
+                    f"{file_name}_teq100_full.csv"
+                ), index=False)
+            teq_df.to_csv(
+                os.path.join(
+                    output_train_path,
+                    f"{file_name}_teq_full.csv"
                 ), index=False)
 
 
