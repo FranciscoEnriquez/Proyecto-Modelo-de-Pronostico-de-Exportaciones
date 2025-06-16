@@ -46,6 +46,11 @@ def split_test_train(df: DataFrame, trainSplit=0.8):
 
     return train_df, test_df
 
+def format_df_to_specific_order(data_df: pd.DataFrame):
+    new_order = ['Valor','Year','Mes']
+    data_df = data_df[new_order]
+    return data_df
+
 
 def main():
     params = yaml.safe_load(open("params.yaml"))["prepare"]
@@ -83,6 +88,9 @@ def main():
         # ======================== Separar en dos categorias ========================
         if not is_pais_dataset:
             teq_100_df, teq_df = separate_subcategories(dataframe, "SubCategoria", ["Tequila 100%", "Tequila"])
+            teq_100_df = format_df_to_specific_order(teq_100_df)
+            teq_df = format_df_to_specific_order(teq_df)
+
             teq_100_train_df, teq_100_test_df = split_test_train(teq_100_df, 0.8)
 
             output_train_path = os.path.join(
@@ -130,6 +138,8 @@ def main():
                 ), index=False)
         else:
             teq_100_df, teq_df = separate_subcategories(dataframe, category_column, ["TEQUILA 100% DE AGAVE", "TEQUILA"])
+            teq_100_df = format_df_to_specific_order(teq_100_df)
+            teq_df = format_df_to_specific_order(teq_df)
 
             teq_100_train_df, teq_100_test_df = split_test_train(teq_100_df, 0.8)
 
@@ -138,6 +148,7 @@ def main():
                 "pipeline",
                 "prepared"
             )
+
 
             # Save the train and test dataframes for Tequila 100%
             teq_100_train_df.to_csv(

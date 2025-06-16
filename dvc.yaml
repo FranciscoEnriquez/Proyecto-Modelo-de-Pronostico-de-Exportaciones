@@ -23,3 +23,15 @@ stages:
       - preprocess.high_corr
       - preprocess.seed
       - preprocess.files
+  train_and_predict:
+    cmd: python pipeline/train_and_predict.py data/pipeline/prepared data/pipeline/train_and_predict
+    deps:
+      - data/pipeline/prepared
+    params:
+      - wf_train_and_predict.walking_forward.window_size
+      - wf_train_and_predict.walking_forward.predict_window
+      - wf_train_and_predict.months_to_predict
+      - wf_train_and_predict.low_var
+      - wf_train_and_predict.high_corr
+      - wf_train_and_predict.export_graphs
+      - wf_train_and_predict.files
