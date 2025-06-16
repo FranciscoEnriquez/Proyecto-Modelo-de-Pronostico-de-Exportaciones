@@ -1,0 +1,37 @@
+stages:
+  prepare:
+    cmd: python pipeline/prepare.py
+    deps:
+      - data/consolidado_consumodeagavetotal.csv
+      - data/consolidado_exportaciones_pais.csv
+      - data/consolidado_exportacionestotalcategoria.csv
+      - data/consolidado_exportacionestotalforma.csv
+      - data/consolidado_producciontotaltequila.csv
+    params:
+      - prepare.seed
+      - prepare.train_split
+      - prepare.files
+    outs:
+      - data/pipeline/prepared
+  preprocessing:
+    cmd: python pipeline/preprocess.py data/pipeline/prepared data/pipeline/preprocessed
+    deps:
+      - data/pipeline/prepared
+    params:
+      - preprocess.target
+      - preprocess.low_var
+      - preprocess.high_corr
+      - preprocess.seed
+      - preprocess.files
+  train_and_predict:
+    cmd: python pipeline/train_and_predict.py data/pipeline/prepared data/pipeline/train_and_predict
+    deps:
+      - data/pipeline/prepared
+    params:
+      - wf_train_and_predict.walking_forward.window_size
+      - wf_train_and_predict.walking_forward.predict_window
+      - wf_train_and_predict.months_to_predict
+      - wf_train_and_predict.low_var
+      - wf_train_and_predict.high_corr
+      - wf_train_and_predict.export_graphs
+      - wf_train_and_predict.files
