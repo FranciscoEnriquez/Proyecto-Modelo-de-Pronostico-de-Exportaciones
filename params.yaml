@@ -20,6 +20,10 @@ prepare:
       subcategoria_col: "Categoria"
     - path: "consolidado_exportacionestotalcategoria.csv"
       subcategoria_col: "SubCategoria"
+    - path: "consolidado_consumodeagavetotal.csv"
+      subcategoria_col: "SubCategoria"
+    - path: "consolidado_producciontotaltequila.csv"
+      subcategoria_col: "SubCategoria"
 preprocess:
   target: "Valor"
   low_var: 0.01
@@ -29,6 +33,10 @@ preprocess:
     - file_name: "exportaciones_pais"
       subcategoria_col: "Categoria"
     - file_name: "exportacionestotalcategoria"
+      subcategoria_col: "SubCategoria"
+    - file_name: "consumodeagavetotal"
+      subcategoria_col: "SubCategoria"
+    - file_name: "producciontotaltequila"
       subcategoria_col: "SubCategoria"
 wf_train_and_predict:
   walking_forward:
@@ -41,6 +49,8 @@ wf_train_and_predict:
   files:
     - "exportaciones_pais"
     - "exportacionestotalcategoria"
+    - "consumodeagavetotal"
+    - "producciontotaltequila"
 mlflow:
   run_name: "Run for {model}"
   experiment_name: "TequilaExportaciones"
