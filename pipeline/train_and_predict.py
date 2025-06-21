@@ -200,6 +200,12 @@ def walk_forward_prediction(data_df: pd.DataFrame, prediction_horizon: int, targ
     data_df = data_df.tail(training_window).copy()
     predictions_df = increment_months(data_df, prediction_horizon + test_window, target_col)
 
+    optional_seatrend = ["seasonal", "trend"]
+    optional_resid = ['Mes_Aug', 'Mes_Dec', 'Mes_Feb', 'Mes_Jan', 'Mes_Jul', 'Mes_Jun', 'Mes_Mar', 'Mes_May', 'Mes_Nov', 'Mes_Oct', 'Mes_Sep', "seasonal", "trend"]
+
+    model = lstm_model((sliding_window_size, len(optional_seatrend) + 1))
+    model_resid = lstm_model((sliding_window_size, len(optional_resid) + 1))
+
     for i in range(0,
                    len(predictions_df) - training_window - test_window,
                     test_window):
@@ -226,27 +232,27 @@ def walk_forward_prediction(data_df: pd.DataFrame, prediction_horizon: int, targ
         _, y_test = Xy_split(test_data, target_col)    
 
         # Create sliding window
-        X_train_sw, y_train_sw = sliding_window_lstm(X_train, y_train, window_size=sliding_window_size, optional_cols=["seasonal", "trend"])
+        X_train_sw, y_train_sw = sliding_window_lstm(X_train, y_train, window_size=sliding_window_size, optional_cols=optional_seatrend)
 
         # Create the model and fit for the data using seasonal and trend data
-        model = lstm_model((X_train_sw.shape[1], X_train_sw.shape[2]))
         model.fit(X_train_sw, y_train_sw, epochs=50, batch_size=32, verbose=0)
 
         # Make a Prediction
-        ltsm_predictions_seas_trend = model.predict(X_train_sw[-1:].copy())        
+        last_sample = tf.convert_to_tensor(np.expand_dims(X_train_sw[-1], axis=0), dtype=tf.float32)
+        ltsm_predictions_seas_trend = model.predict(last_sample)
         unscaled_prediction_seatrend = minmax_sc.inverse_transform(np.pad(ltsm_predictions_seas_trend, ((0, 0), (0, len(minmax_sc.feature_names_in_) - 1)), mode='constant'))
         # ════════════════════════════════════════════════════ Prediccion del residuo (ruido) ═══════════════════════════════════════
         X_train, y_train,  = Xy_split(train_dec_df, "resid")
 
         # Create sliding window
-        X_train_sw, y_train_sw = sliding_window_lstm(X_train, y_train, window_size=sliding_window_size, optional_cols=['Mes_Aug', 'Mes_Dec', 'Mes_Feb', 'Mes_Jan', 'Mes_Jul', 'Mes_Jun', 'Mes_Mar', 'Mes_May', 'Mes_Nov', 'Mes_Oct', 'Mes_Sep', "seasonal", "trend"])
+        X_train_sw, y_train_sw = sliding_window_lstm(X_train, y_train, window_size=sliding_window_size, optional_cols=optional_resid)
 
         # Create the model and fit for the data using seasonal and trend data
-        model_resid = lstm_model((X_train_sw.shape[1], X_train_sw.shape[2]))
         model_resid.fit(X_train_sw, y_train_sw, epochs=20, batch_size=32, verbose=0)
 
         # Make a Prediction
-        ltsm_predictions_resid = model_resid.predict(X_train_sw[-1:].copy())
+        last_sample_resid = tf.convert_to_tensor(np.expand_dims(X_train_sw[-1], axis=0), dtype=tf.float32)
+        ltsm_predictions_resid = model_resid.predict(last_sample_resid)
         unscaled_prediction_resid = minmax_sc.inverse_transform(np.pad(ltsm_predictions_resid, ((0, 0), (0, len(minmax_sc.feature_names_in_) - 1)), mode='constant'))
 
         yhat = ltsm_predictions_seas_trend + ltsm_predictions_resid
@@ -328,11 +334,11 @@ def main():
    
     # window_size = 36
     # predict_window = 1
-    # months_to_predict = 4
+    # months_to_predict = 84
     # low_var = 0.01
     # high_corr = 0.95
     # export_graphs = True
-    # files = ["exportaciones_pais", "exportacionestotalcategoria"]
+    # files = ["exportacionestotalcategoria"]
 
     if len(sys.argv) != 3:
         sys.stderr.write("Arguments error. Usage:\n")

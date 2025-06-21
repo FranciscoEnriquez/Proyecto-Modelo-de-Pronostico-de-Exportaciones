@@ -138,8 +138,12 @@ def feature_engineering(
     else:
         # # filtros numéricos
         num = df.select_dtypes("number").fillna(0)
-        keep = num.columns[VarianceThreshold(low_var).fit(num).get_support()]
-        df = df[keep.tolist() + [c for c in df.columns if c not in num.columns]]
+        keep = num.columns[VarianceThreshold(low_var).fit(num).get_support()].tolist()
+
+        if target_col not in keep:
+            keep.append(target_col)
+
+        df = df[keep + [c for c in df.columns if c not in num.columns]]
         high_corr_cols = _remove_high_corr(df.select_dtypes("number"), target_col, high_corr)
         df = df.drop(
             columns=high_corr_cols
