@@ -179,6 +179,7 @@ def walk_forward_validation(data_df: pd.DataFrame, target_col: str = "Valor", tr
     Walk-forward validation for time series forecasting.
     """
     actuals = []
+    actual_dates = []
     predictions = []
     prediction_seas_trends = []
     prediction_resids = []
@@ -236,18 +237,21 @@ def walk_forward_validation(data_df: pd.DataFrame, target_col: str = "Valor", tr
         last_sample_resid = tf.convert_to_tensor(np.expand_dims(X_train_sw[-1], axis=0), dtype=tf.float32)
         ltsm_predictions_resid = model_resid.predict(last_sample_resid)
         unscaled_prediction_resid = minmax_sc.inverse_transform(np.pad(ltsm_predictions_resid, ((0, 0), (0, len(minmax_sc.feature_names_in_) - 1)), mode='constant'))
-
+        
         yhat = ltsm_predictions_seas_trend + ltsm_predictions_resid
         unscaled_prediction = minmax_sc.inverse_transform(np.pad(yhat, ((0, 0), (0, len(minmax_sc.feature_names_in_)-1)), mode='constant'))
+        real_value = minmax_sc.inverse_transform(np.pad(np.array([[y_test.iloc[0]]]), ((0, 0), (0, len(minmax_sc.feature_names_in_)-1)), mode='constant'))
         
         prediction_seas_trend = unscaled_prediction_seatrend[0, 0:1]
         prediction_resid = unscaled_prediction_resid[0, 0:1]
         prediction = unscaled_prediction[0, 0:1]
+        real_value = real_value[0, 0:1]
 
         predictions.extend(prediction)
         prediction_seas_trends.extend(prediction_seas_trend)
         prediction_resids.extend(prediction_resid)
-        actuals.extend(y_test.values)
+        actuals.extend(real_value)
+        actual_dates.extend(y_test.index)
 
     # return predictions, actuals, metrics_trend_season, metrics_resid
     return {
@@ -257,18 +261,20 @@ def walk_forward_validation(data_df: pd.DataFrame, target_col: str = "Valor", tr
             "total": predictions
         },
         "actuals": actuals,
+        "actual_dates": actual_dates,
         "metrics_trend_season": metrics_trend_season
     }
 
 def results_to_df(data_df: pd.DataFrame, results, window_size: int, prediction_size: int) -> pd.DataFrame:
-    new_df = data_df[window_size:].copy()
-    new_df = new_df.iloc[:-prediction_size]
+    new_df = data_df[window_size + prediction_size:].copy()
 
     new_df["Fecha"] = pd.to_datetime(
             new_df["Year"].astype(str) + "-" + new_df["Mes"].astype(str).str.zfill(2)
         )
     new_df = new_df.set_index('Fecha')
 
+    new_df['actual_value'] = results['actuals']
+    new_df['actual_dates'] = results['actual_dates']
     new_df['seas_trend'] = results['predictions']['seas_trend']
     new_df['resid'] = results['predictions']['resid']
     new_df['total'] = results['predictions']['total']
@@ -281,9 +287,8 @@ def graph_predictions(data_df: pd.DataFrame, output_name: str, prediction_horizo
     graph_title = f"Walk-Forward validation of {output_name} with an horizon of {prediction_horizon} months"
 
     plt.figure(figsize=(12,8))
-    plt.plot(data_df.index, data_df['Valor'], label="Train (Actual)")
-    plt.plot(data_df.index, data_df['seas_trend'], label="Predictions LSTM Seasonality + Trend")
-    plt.plot(data_df.index, data_df['total'], label="Predictions LSTM Seasonality + Trend + Residuals")
+    plt.plot(data_df.index, data_df['actual_value'], label="Train (Actual)")
+    plt.plot(data_df.index, data_df['total'], label="Predictions LSTM Seasonality + Trend + Residuals", linestyle='--')
     plt.title(graph_title)
     plt.xlabel("Date")
     plt.ylabel("Valor")
