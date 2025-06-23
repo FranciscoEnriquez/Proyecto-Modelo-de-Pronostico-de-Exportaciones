@@ -306,7 +306,7 @@ def graph_predictions(data_df: pd.DataFrame, results, prediction_horizon: int, o
 
     plt.figure(figsize=(12,8))
     plt.plot(data_df.index, data_df['Valor'], label="Actual Values")
-    plt.plot(future_df.index, future_df["seas_trend"], label="Walk forward Predictions LSTM - Season + trend", linestyle='--')
+    # plt.plot(future_df.index, future_df["seas_trend"], label="Walk forward Predictions LSTM - Season + trend", linestyle='--')
     plt.plot(future_df.index, future_df["total"], label="Walk forward Predictions LSTM - Season + trend + Resid", linestyle='--')
     # plt.plot(wf_df.index, wf_df["Walk_forward_seas_trend_resid_mean"], label="Walk forward Predictions LSTM - (Season & trend + Residuals) / 2", linestyle='--')
 
